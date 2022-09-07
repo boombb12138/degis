@@ -1,16 +1,25 @@
 <template>
   <div class="CarouselContainer">
-    <Swiper
-      ref="mySwiper"
-      :mousewheel="{ enabled: true }"
-      :id="currentIndex"
-      :scrollbar="{ draggable: true }"
-      direction="vertical"
+    <swiper
+      class="mySwiper2 swiper-h"
+      :slidesPerView="3"
+      :spaceBetween="30"
+      :pagination="{
+        clickable: true,
+      }"
+      :modules="modules"
+      :autoplay="true"
+      v-for="item in founder"
+      :key="item.index"
     >
-      <SwiperSlide class="swiper-slide">1</SwiperSlide>
-      <SwiperSlide class="swiper-slide">2</SwiperSlide>
-      <SwiperSlide class="swiper-slide">3</SwiperSlide>
-    </Swiper>
+      <swiper-slide>
+        <div class="rolecard">
+          <img src="../assets/role1.png" alt="" />
+          <p>{{ item.name }}</p>
+          <p>{{ item.role }}</p>
+        </div>
+      </swiper-slide>
+    </swiper>
   </div>
 </template>
 
@@ -35,9 +44,20 @@ export default {
     const onSlideChange = () => {
       console.log("slide change");
     };
+    let founder = [
+      { name: "Andy", role: "Founder" },
+      { name: "Eric Li", role: "CTO" },
+      { name: "Eric Li", role: "CTO" },
+      { name: "Eric Li", role: "CTO" },
+      { name: "Eric Li", role: "CTO" },
+      { name: "Oliver", role: "CFO" },
+      { name: "Oliver", role: "CFO" },
+      { name: "Oliver", role: "CFO" },
+    ];
     return {
       proxy,
       onSlideChange,
+      founder,
       modules: [Navigation, Pagination, Scrollbar, Mousewheel],
     };
   },

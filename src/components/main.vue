@@ -124,27 +124,8 @@
             <swiper-slide>Slide 1</swiper-slide
             ><swiper-slide>Slide 2</swiper-slide>
             <swiper-slide>
-              <swiper
-                class="mySwiper2 swiper-h"
-                :slidesPerView="3"
-                :spaceBetween="30"
-                :pagination="{
-                  clickable: true,
-                }"
-                :modules="modules"
-                :autoplay="true"
-                v-for="item in founder"
-                :key="item.index"
-              >
-                <swiper-slide>
-                  <div class="rolecard">
-                    <img src="../assets/role1.png" alt="" />
-                    <p>{{ item.name }}</p>
-                    <p>{{ item.role }}</p>
-                  </div>
-                </swiper-slide>
-              </swiper>
-            </swiper-slide>
+              <carousel-container></carousel-container
+            ></swiper-slide>
             <swiper-slide>Slide 4</swiper-slide
             ><swiper-slide>Slide 5</swiper-slide
             ><swiper-slide>Slide 6</swiper-slide
@@ -159,7 +140,7 @@
 </template>
 
 <script>
-// import CarouselContainer from "./CarouselContainer.vue";
+import CarouselContainer from "./CarouselContainer.vue";
 import { ref, nextTick } from "vue";
 
 // import swiperPage1 from "./swiperPage/swiperPage1.vue";
@@ -181,6 +162,7 @@ export default {
   components: {
     Swiper,
     SwiperSlide,
+    CarouselContainer,
   },
 
   setup() {
@@ -276,22 +258,13 @@ export default {
       //   }
       // }
     };
-    let founder = [
-      { name: "Andy", role: "Founder" },
-      { name: "Eric Li", role: "CTO" },
-      { name: "Eric Li", role: "CTO" },
-      { name: "Eric Li", role: "CTO" },
-      { name: "Eric Li", role: "CTO" },
-      { name: "Oliver", role: "CFO" },
-      { name: "Oliver", role: "CFO" },
-      { name: "Oliver", role: "CFO" },
-    ];
+
     return {
       roleData,
       handleScroll,
       carousel,
       introduce,
-      founder,
+
       modules: [Mousewheel, Pagination],
     };
   },
