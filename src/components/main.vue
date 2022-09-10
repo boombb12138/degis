@@ -1,23 +1,17 @@
 <template>
   <div id="nuxt">
     <div id="layout">
-      <div class="page">
+      <div class="page" ref="carousel">
         <!-- 顶部 -->
         <div class="fixed">
           <div class="logo">
             <img src="../assets/logo.png" alt="" />
           </div>
-          <div class="tabbar">
+          <div class="main-tabbar">
             <div class="mint">
               <img src="../assets/box.png" alt="" class="box" />
-              <div class="text">
-                <router-link
-                  to="/mint"
-                  style="color: #fff; text-decoration: none"
-                >
-                  Mint your warrior</router-link
-                >
-                <router-view></router-view>
+              <div class="text1">
+                <button @click="jumpToMint">Mint your warrior</button>
               </div>
             </div>
             <a href="">
@@ -73,42 +67,6 @@
         </div>
 
         <!-- 左边的垂直手动轮播图 -->
-        <!-- <carousel-container></carousel-container> -->
-        <!-- <div class="left-slide">
-          <el-carousel
-            height="200px"
-            direction="vertical"
-            :autoplay="false"
-            trigger="hover"
-            ref="carousel"
-            class="el-carousel-h"
-          >
-            <el-carousel-item
-              v-for="item in introduce"
-              :key="item.index"
-              :name="'index' + item.index"
-            >
-              <div class="center">
-                <div v-if="item.index == 0">
-                  <swiper-page-1></swiper-page-1>
-                </div>
-                <div v-else-if="item.index == 1">
-                  <swiper-page-2></swiper-page-2>
-                </div>
-                <div v-else-if="item.index == 2">
-                  <swiper-page-3></swiper-page-3>
-                </div>
-                <div v-else-if="item.index == 3">
-                  <swiper-page-4></swiper-page-4>
-                </div>
-                <div v-else-if="item.index == 4">
-                  <swiper-page-5></swiper-page-5>
-                </div>
-              </div>
-              <div class="bottom"></div>
-            </el-carousel-item>
-          </el-carousel>
-        </div> -->
         <div class="left-side">
           <swiper
             :direction="'vertical'"
@@ -119,19 +77,39 @@
               clickable: true,
             }"
             :modules="modules"
-            class="mySwiper"
+            class="mySwiper-out"
           >
-            <swiper-slide>Slide 1</swiper-slide
-            ><swiper-slide>Slide 2</swiper-slide>
-            <swiper-slide>
-              <carousel-container></carousel-container
-            ></swiper-slide>
-            <swiper-slide>Slide 4</swiper-slide
-            ><swiper-slide>Slide 5</swiper-slide
-            ><swiper-slide>Slide 6</swiper-slide
-            ><swiper-slide>Slide 7</swiper-slide
-            ><swiper-slide>Slide 8</swiper-slide
-            ><swiper-slide>Slide 9</swiper-slide>
+            <swiper-slide><swiper-page-1></swiper-page-1></swiper-slide>
+            <swiper-slide><swiper-page-2></swiper-page-2></swiper-slide>
+            <swiper-slide><swiper-page-3></swiper-page-3></swiper-slide>
+
+            <swiper-slide class="page4Slide">
+              <span>The Founding Warrior of Degis Kingdom</span>
+              <swiper
+                :slidesPerView="3"
+                :slidesPerGroup="1"
+                :spaceBetween="30"
+                :loop="true"
+                :loopFillGroupWithBlank="false"
+                :modules="modules"
+                :autoplay="{
+                  delay: 3000,
+                  disableOnInteraction: false,
+                }"
+                class="mySwiper-in"
+              >
+                <swiper-slide v-for="item in founder" :key="item.index">
+                  <div class="imageBox">
+                    <img :src="item.url" alt="" />
+                  </div>
+                  <div class="mySwiper-in-title">
+                    <p>{{ item.name }}</p>
+                    <p>{{ item.role }}</p>
+                  </div>
+                </swiper-slide>
+              </swiper>
+            </swiper-slide>
+            <swiper-slide><swiper-page-5></swiper-page-5></swiper-slide>
           </swiper>
         </div>
       </div>
@@ -140,20 +118,23 @@
 </template>
 
 <script>
-import CarouselContainer from "./CarouselContainer.vue";
+// import CarouselContainer from "./CarouselContainer.vue";
 import { ref, nextTick } from "vue";
+// import { useRouter } from "vue-router";
 
-// import swiperPage1 from "./swiperPage/swiperPage1.vue";
-// import swiperPage2 from "./swiperPage/swiperPage2.vue";
-// import swiperPage3 from "./swiperPage/swiperPage3.vue";
+import swiperPage1 from "./swiperPage/swiperPage1.vue";
+import swiperPage2 from "./swiperPage/swiperPage2.vue";
+import swiperPage3 from "./swiperPage/swiperPage3.vue";
 // import swiperPage4 from "./swiperPage/swiperPage4.vue";
-// import swiperPage5 from "./swiperPage/swiperPage5.vue";
+import swiperPage5 from "./swiperPage/swiperPage5.vue";
 
 import { Swiper, SwiperSlide } from "swiper/vue";
-
 import "swiper/css";
 import "swiper/css/pagination";
-import { Mousewheel, Pagination } from "swiper";
+import "swiper/css/autoplay";
+import "swiper/css/effect-fade";
+import { Mousewheel, Autoplay, Pagination } from "swiper";
+import { useRouter } from "vue-router";
 export default {
   name: "main-page",
   props: {
@@ -162,16 +143,31 @@ export default {
   components: {
     Swiper,
     SwiperSlide,
-    CarouselContainer,
+    swiperPage1,
+    swiperPage2,
+    swiperPage3,
+    // swiperPage4,
+    swiperPage5,
+    // CarouselContainer,
   },
 
   setup() {
     const carousel = ref(null);
 
+    const router = useRouter();
+
     const roleData = [
       {
         url: require("../assets/card.png"),
         url2: require("../assets/role1.png"),
+        role: "Role: Leader of Warriors",
+        description:
+          "Andy is the leader of the warriors. He is always full of enthusiasm and ready to raise his shield to protect the kingdom and all Degisons!",
+        name: "Andy",
+      },
+      {
+        url: require("../assets/card.png"),
+        url2: require("../assets/Zixin.png"),
         role: "Role: Art Designer",
         description:
           "Peachy is a superavid fan of peach and she is alsovery talented in art design. Youdonot see her often in the chat asshe is shy, but in all Degis",
@@ -179,27 +175,19 @@ export default {
       },
       {
         url: require("../assets/card.png"),
-        url2: require("../assets/role1.png"),
-        role: "Role: Art Designer",
+        url2: require("../assets/Eric.png"),
+        role: "Role: Tech Lead",
         description:
-          "Peachy is a superavid fan of peach and she is alsovery talented in art design. Youdonot see her often in the chat asshe is shy, but in all Degis",
-        name: "Peachy",
+          "Eric is a big big tech fan. He does not talk a lot but he is really reliable in work. Without his knowledge and dedication, there will be no Degis Kingdom.",
+        name: "Eric",
       },
       {
         url: require("../assets/card.png"),
-        url2: require("../assets/role1.png"),
-        role: "Role: Art Designer",
+        url2: require("../assets/Theo.png"),
+        role: "Role: Engineer",
         description:
-          "Peachy is a superavid fan of peach and she is alsovery talented in art design. Youdonot see her often in the chat asshe is shy, but in all Degis",
-        name: "Peachy",
-      },
-      {
-        url: require("../assets/card.png"),
-        url2: require("../assets/role1.png"),
-        role: "Role: Art Designer",
-        description:
-          "Peachy is a superavid fan of peach and she is alsovery talented in art design. Youdonot see her often in the chat asshe is shy, but in all Degis",
-        name: "Peachy",
+          "Theo is the engineer of Degis Kingdom. He is not a very sociable kind of person, but if you approach him, you will find out how friendly and interesting he is.",
+        name: "Theo",
       },
     ];
     const introduce = [
@@ -258,14 +246,86 @@ export default {
       //   }
       // }
     };
-
+    let founder = [
+      {
+        name: "Andy",
+        role: "Founder",
+        index: 0,
+        url: require("../assets/role1.png"),
+      },
+      {
+        name: "Eric Li",
+        role: "CTO",
+        index: 1,
+        url: require("../assets/Eric.png"),
+      },
+      {
+        name: "Oliver",
+        role: "CFO",
+        index: 2,
+        url: require("../assets/Oliver.png"),
+      },
+      {
+        name: "Serllin",
+        role: "Chief Data Scientist",
+        index: 3,
+        url: require("../assets/Serllin.png"),
+      },
+      {
+        name: "Pero",
+        role: "CMO",
+        index: 4,
+        url: require("../assets/Pero.png"),
+      },
+      {
+        name: "Theo",
+        role: "Smart Contract Developer",
+        index: 5,
+        url: require("../assets/Theo.png"),
+      },
+      {
+        name: "Andrew",
+        role: "Head of BD",
+        index: 6,
+        url: require("../assets/Andrew.png"),
+      },
+      {
+        name: "LOU",
+        role: "Product Manager",
+        index: 7,
+        url: require("../assets/LOU.png"),
+      },
+      {
+        name: "Zixin",
+        role: "Designer",
+        index: 8,
+        url: require("../assets/Zixin.png"),
+      },
+      {
+        name: "Max",
+        role: "Community Manager",
+        index: 9,
+        url: require("../assets/Max.png"),
+      },
+    ];
+    const jumpToMint = function () {
+      // 点击路由跳转 注意事件要被触发
+      router.push("/mint");
+      // window.open("http://localhost:8080/#/mint", "_blank");
+    };
     return {
       roleData,
       handleScroll,
       carousel,
       introduce,
-
-      modules: [Mousewheel, Pagination],
+      swiperPage1,
+      swiperPage2,
+      swiperPage3,
+      // swiperPage4,
+      swiperPage5,
+      founder,
+      jumpToMint,
+      modules: [Autoplay, Mousewheel, Pagination],
     };
   },
 };
@@ -277,10 +337,18 @@ export default {
   margin: 0;
   padding: 0;
 }
+
 .page {
   zoom: 90%;
+  width: 1920px;
+  height: 1080px;
+  display: flex;
+  background-color: #191433;
 }
-
+@font-face {
+  font-family: "Grenze_Gotisch";
+  src: url("/src/assets/font/Grenze_Gotisch/GrenzeGotisch-VariableFont_wght.ttf");
+}
 /* 顶部 */
 .fixed {
   display: flex;
@@ -295,12 +363,12 @@ export default {
   justify-content: space-between;
   align-items: center;
 }
-.tabbar {
+.main-tabbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
-.tabbar a {
+.main-tabbar a {
   margin-right: 15px;
 }
 /* mint */
@@ -320,19 +388,27 @@ export default {
   align-items: center;
   justify-content: center;
 }
-.text {
+
+.text1 {
   background-color: #3f2e89;
   border: 5px solid #6645db;
   box-shadow: 0 10px 20px rgb(0, 0, 0, 50%);
   border-radius: 5px;
   color: white;
-  margin-right: 5px;
-  position: relative;
-  left: -7%;
-  line-height: 31px;
   text-align: center;
-  padding-left: 33px;
-  z-index: -1;
+  padding: 10px 30px;
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+.text1 button {
+  color: white;
+  border: none;
+  background: transparent;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
 }
 
 /* 右边自动轮播图 */
@@ -343,6 +419,8 @@ export default {
   right: 125px;
   background-color: #fff;
   width: 710px;
+  flex-shrink: 1;
+  font-family: "Grenze_Gotisch" !important;
 }
 .right-slide .el-carousel {
   box-sizing: content-box;
@@ -351,12 +429,14 @@ export default {
   overflow: hidden;
   position: absolute;
   transition-duration: 300ms;
+  font-family: "Grenze_Gotisch" !important;
 }
 .right-slide :deep(.el-carousel__container) {
-  /* height: 720px; */
+  /* height: 600px !important; */
   display: flex !important;
   justify-content: center;
   align-items: center;
+  font-family: "Grenze_Gotisch" !important;
 }
 .right-slide .el-carousel-item {
   position: relative;
@@ -379,6 +459,7 @@ export default {
   position: absolute;
   top: 25%;
   left: 125px;
+  opacity: 0.8;
 }
 :deep(.role) {
   position: absolute;
@@ -391,6 +472,8 @@ export default {
   top: 45%;
   left: 20%;
   color: #fff;
+  opacity: 0.7;
+  font-size: 22px;
 }
 
 .right-slide .name {
@@ -403,7 +486,7 @@ export default {
 .right-slide .description {
   position: absolute;
   top: 30%;
-  right: 20%;
+  right: 17%;
   color: #fff;
   width: 250px;
   height: 155px;
@@ -442,71 +525,108 @@ export default {
 }
 
 /* 左边手动轮播图 */
-/* .left-slide {
+.left-side {
   position: absolute;
-  top: 25%;
-  left: 70px;
-  background-color: green;
-  width: 723px;
-  height: 500px;
-}
-.left-slide .el-carousel-h {
-  height: 500px;
-}
-:deep(.el-carousel-h > .el-carousel__container) {
-  height: 500px !important;
-}
-:deep(.el-carousel-h .el-carousel__indicators--vertical) {
-  left: 0 !important;
   top: 50%;
   transform: translateY(-50%);
-
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 50px;
-}
-:deep(.el-carousel-h .el-carousel__indicators--vertical li) {
-  padding: 10px 0px;
-}
-.left-slide .el-carousel-h :deep(.el-carousel__button) {
-  width: 12px;
-  height: 12px;
-  border: 1px solid #fff;
-  border-radius: 50%;
-  background-color: transparent;
-}
-.el-carousel-h :deep(.el-carousel__indicator.is-active button) {
-  border: none;
-  background-image: url("../assets/joy.png");
-  width: 32px;
-  height: 32px;
-  background-color: transparent;
-} */
-.left-side {
-  position: relative;
-  height: 164px;
-  width: 446px;
-  background: #eee;
+  height: 520px;
+  width: 670px;
+  background: transparent;
   font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
   font-size: 14px;
-  color: #000;
+  color: #fff;
   margin: 0;
   padding: 0;
+  flex-shrink: 0;
 }
 
-.swiper {
+.mySwiper-out {
   width: 100%;
   height: 100%;
+  padding-left: 200px;
 }
 
-.swiper-slide {
-  text-align: center;
+.mySwiper-out > .swiper-slide {
   font-size: 18px;
   background: #fff;
 
   /* Center slide text vertically */
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+}
+
+.mySwiper-out > .swiper-slide img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+:deep(.left-side
+    .swiper-pagination-vertical.swiper-pagination-bullets, .swiper-vertical
+    > .swiper-pagination-bullets) {
+  left: 10px;
+  /* margin-right: 80px; */
+  width: 50px;
+  justify-content: center;
+  align-items: center;
+}
+:deep(.left-side
+    .swiper-pagination-vertical.swiper-pagination-bullets, .swiper-vertical
+    > .swiper-pagination-bullets
+    span) {
+  /* display: block; */
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  vertical-align: middle;
+  margin-left: 75px;
+}
+:deep(.swiper-vertical > .swiper-pagination-bullets .swiper-pagination-bullet) {
+  /* width: 10px;
+  height: 10px; */
+  background-color: transparent;
+  border: 2px solid #fff;
+}
+:deep(.left-side .swiper-pagination-vertical .swiper-pagination-bullet-active) {
+  background-image: url("../assets/joy.png");
+  background-size: 32px;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background-color: transparent;
+}
+:deep(.page4Slide) {
+  display: block;
+}
+:deep(.page4Slide span) {
+  font-weight: 900;
+  font-size: 50px;
+  line-height: 125%;
+}
+:deep(.mySwiper-in) {
+  margin-top: 30px;
+  padding: 10px 0;
+  height: 250px;
+  position: relative;
+}
+:deep(.mySwiper-in .swiper-wrapper > .swiper-slide) {
+  text-align: center;
+  font-size: 18px;
+  background: transparent;
+  border: 1px solid #6645db;
+  border-radius: 20px;
+  width: 190px !important;
+  margin-right: 15px !important;
+
   display: -webkit-box;
   display: -ms-flexbox;
   display: -webkit-flex;
@@ -520,29 +640,23 @@ export default {
   -webkit-align-items: center;
   align-items: center;
 }
+.imageBox {
+  position: absolute;
+  width: 129px;
+  height: 108px;
+  left: 242px;
+  top: 24px;
+  background-color: transparent;
+  /* background-image: url(); */
+}
 
-.swiper-slide img {
-  display: block;
-  width: 100%;
+:deep(.imageBox img) {
   height: 100%;
+  width: 100%;
   object-fit: cover;
 }
-
-.swiper-v {
-  background: #eee;
-}
-.mySwiper2 .swiper-h {
-  overflow: hidden;
-  width: 437px !important;
-}
-.mySwiper2 .swiper-wrapper {
-  width: 437px !important;
-}
-.mySwiper2 .swiper-slide {
-  width: 110px !important;
-}
-:deep(.mySwiper2 .swiper-h .swiper-slide .rolecard) {
-  width: 110px !important;
-  border: 1px solid blue;
+:deep(.mySwiper-in-title) {
+  position: absolute;
+  top: 150px;
 }
 </style>

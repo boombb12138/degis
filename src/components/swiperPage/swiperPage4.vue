@@ -1,80 +1,101 @@
 <template>
   <div class="carouselbox">
-    <h1>The Founding Warrior of Degis Kingdom</h1>
-    <el-carousel
-      :loop="false"
-      :autoplay="true"
-      indicator-position="none"
-      class="el-carousel-v"
-      height="270px"
+    <span>The Founding Warrior of Degis Kingdom</span>
+    <!-- <swiper
+      :slidesPerView="3"
+      :spaceBetween="30"
+      :loop="true"
+      :loopFillGroupWithBlank="true"
+      :autoplay="{
+        delay: 2500,
+        disableOnInteraction: false,
+      }"
+      :pagination="{
+        clickable: true,
+      }"
+      :modules="modules"
+      class="mySwiper-in"
     >
-      <el-carousel-item
-        class="el-carousel-item-v"
-        v-for="item in founder"
-        :key="item.index"
-        justify="center"
-        ><div class="card" v-for="i in item" :key="i.index">
-          {{ i.name }}
-        </div></el-carousel-item
-      >
-    </el-carousel>
+      <swiper-slide>Slide 1</swiper-slide
+      ><swiper-slide>Slide 2</swiper-slide> ><swiper-slide>Slide 8</swiper-slide
+      ><swiper-slide>Slide 9</swiper-slide>
+    </swiper> -->
+    <!-- <slot style="z-index=100"></slot> -->
   </div>
 </template>
 
 <script>
+// import { Swiper, SwiperSlide } from "swiper/vue";
+
+// Import Swiper styles
+import "swiper/css";
+
+import "swiper/css/pagination";
+import "swiper/css/navigation";
+
+// import required modules
+import { Pagination, Navigation } from "swiper";
 export default {
+  components: {
+    // Swiper,
+    // SwiperSlide,
+  },
   setup() {
     let founder = [
       { name: "Andy", role: "Founder" },
-      { name: "Eric Li", role: "CTO" },
-      { name: "Eric Li", role: "CTO" },
-      { name: "Eric Li", role: "CTO" },
       { name: "Eric Li", role: "CTO" },
       { name: "Oliver", role: "CFO" },
       { name: "Oliver", role: "CFO" },
       { name: "Oliver", role: "CFO" },
     ];
 
-    let newDataList = [];
-    let current = 0;
-    for (let i = 0; i <= founder.length - 1; i++) {
-      if (i % 5 !== 0 || i === 0) {
-        if (!newDataList[current]) {
-          newDataList.push([founder[i]]);
-        } else {
-          newDataList[current].push(founder[i]);
-        }
-      } else {
-        current++;
-        newDataList.push([founder[i]]);
-      }
-    }
-    // founder = [...newDataList];
-    founder = newDataList;
-    return { founder };
+    return { founder, modules: [Pagination, Navigation] };
   },
 };
 </script>
 <style scoped>
 .carouselbox {
-  height: 270px;
+  /* height: 270px; */
+  position: relative;
+  height: 100%;
+
+  background: #eee;
+  font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  color: #000;
+  margin: 0;
+  padding: 0;
 }
-.el-carousel-v {
-  /* display: flex;
-  flex-direction: left; */
+
+.swiper {
+  width: 100%;
+  height: 100%;
 }
-.el-carousel__container {
+
+.swiper-slide {
+  text-align: center;
+  font-size: 18px;
+  background: #fff;
+
+  /* Center slide text vertically */
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
   display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  align-items: center;
 }
-.el-carousel-item-v {
-  height: 270px;
-  display: flex;
-}
-.el-carousel-v .card {
-  /* display: flex; */
-  height: 260px;
-  width: 191px;
-  margin-right: 20px;
-  border: 1px solid blue;
+
+.swiper-slide img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 </style>
