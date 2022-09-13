@@ -30,13 +30,19 @@
 </template>
 
 <script>
-import mint from "../../composables/mint.js";
+// import mint from "../../composables/mint.js";
+import { mintNFT } from "../../utils/interact.js";
 
 import { ref } from "vue";
 export default {
   components: {},
   setup() {
     let mintAmount = ref(0);
+    const mint = async (mintAmount) => {
+      const response = await mintNFT(mintAmount);
+      console.log("response", response);
+    };
+
     const subMintAmount = () => {
       mintAmount.value--;
       console.log("subMintAmount");

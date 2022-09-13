@@ -6,37 +6,35 @@ const mint = async function (mintAmount) {
     const provider = new ethers.providers.JsonRpcProvider(
       "https://api.avax-test.network/ext/bc/C/rpc"
     );
+    // const wallet = new ethers.Wallet.fromMnemonic(
+    //   "pig candy kid mom organ candy power sound siren category matter kingdom screen crystal problem horror detail devote picture physical shine foot myth bachelor"
+    // );
     const signer = provider.getSigner();
-    // const myAddress = await signer.getAddress();
 
-    //   创建合约
+    //   创建可写合约
     const ERC20_ABI = nftABI;
-    const contract = new ethers.Contract(contractAddress, ERC20_ABI, provider);
+    const contract = new ethers.Contract(contractAddress, ERC20_ABI, signer);
     console.log(contract);
-    // myAddress,
-    //    signer.address,
-    // BigNumber.from(mintAmount)
-
-    const account2 = "0x3e6f79bd8dd4b637b070aac933f648371def1bef";
-    const tx = await signer.sendTransaction({
-      to: account2,
-      value: ethers.utils.parseEther("0.025"),
-    });
-    tx();
-    // const contractWithSigner = contract.connect(signer);
-    // const AVAX = ethers.utils.parseUnits("1.0", 18);
-    // const tx = contractWithSigner.transfer(myAddress, AVAX);
 
     try {
-      const response = await contract.mint(
-        signer.address,
-        BigNumber.from(mintAmount)
-      );
+      const response = await contract.mint(BigNumber.from(mintAmount));
       console.log("response", response);
     } catch (error) {
       console.log(error);
     }
+
+    // 造币
+    // const NFTcontract = await ethers.getContractFactory("NFTcontract");
+    // const contract = await NFTcontract.attach(
+    //   "0x3bDBB40160d450445EDAbceb7CE3b3dCF2C9Cd5B"
+    // );
+    // await contract.deploy(
+    //   "_mockToken",
+    //   " 0x3e6f79bd8dd4b637b070aac933f648371def1bef"
+    // ); //现在这个地址上面就有代币了
+
+    // await mintContract.deployed();
+    // console.log("mintContract deployed to:", mintContract.address);
   }
 };
 export default mint;
-// 改变状态
