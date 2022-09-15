@@ -1,12 +1,13 @@
 require("dotenv").config();
-import { ethers, BigNumber } from "ethers";
-// import nftABI from "../../nftABI.json";
-import { contractAddress } from "@/composables/address";
-import { address } from "@/composables/address";
+import { ethers } from "ethers";
+import nftABI from "../../nftABI.json";
+// import { tokenAddress } from "@/composables/address";
+import { NFTcontractAddress } from "@/composables/address";
+import { pinJSONToIPFS } from "./pinata.js";
 // import { pinJSONToIPFS } from "./pinata";
 import tokenABI from "../../tokenABI.json";
 
-const contractABI = tokenABI;
+// const contractABI = tokenABI;
 var obj = { something: window };
 
 // 消除window对象报错
@@ -37,31 +38,10 @@ window.postMessage(obj, "*");
 
 console.log("We do not have any errors.");
 
-export const mintNFT = async (mintAmount) => {
-  // 处理错误
-  // 去掉首尾的空格 如果有一个为空
-  //   if (url.trim() == "" || name.trim() == "" || description.trim() == "") {
-  //     return {
-  //       success: false,
-  //       status: "在mint前请确认所有的区域都完成了",
-  //     };
-  //   }
+export const mintNFT = async () => {
+  const pinataResponse = await pinJSONToIPFS(tokenABI);
+  const tokenURI = pinataResponse.pinataUrl;
 
-  //   // 元数据
-  //   const metadata = tokenABI;
-
-  //   //将元数据上传到IPFS 获取tokenURI
-  //   const pinataResponse = await pinJSONToIPFS(metadata); //将pinJSONToIPFS请求返回的对象存储在对象中
-  //   // 如果请求失败
-  //   if (!pinataResponse.success) {
-  //     return {
-  //       success: false,
-  //       status: "oops!上传tokenUri的时候出了问题",
-  //     };
-  //   }
-  //   // 请求成功pinataResponse中有元数据的固定位置
-  //   const tokenUri = pinataResponse.pinataUrl;
-  //   "https://api.avax-test.network/ext/bc/C/rpc"
   let network = {
     chainId: 43113,
     name: "Fuji(C-Chain)",
@@ -70,18 +50,26 @@ export const mintNFT = async (mintAmount) => {
   const provider = new ethers.providers.Web3Provider(window.ethereum, network);
   const signer = provider.getSigner();
 
-  const contract = new ethers.Contract(contractAddress, contractABI, signer);
+  const contract = new ethers.Contract(NFTcontractAddress, nftABI, signer);
   console.log(contract);
 
-  await contract.mint(address, BigNumber.from(mintAmount));
+  // learnWeb3的部分===
+  // const value = 0.001 * mintAmount;
+  // const tx = await contract.mint(mintAmount, {
+  //   value: utils.parseEther(value.toString()),
+  // });
+  // await tx.wait();
+  // window.alert("mint成功了");
+  // learnWeb3的部分===
+
   //   交易
   const Transfer = {
-    from: address, //交易的签名者也就是用户
-    to: contractAddress, //收件人的地址也就是合约
-    amount: mintAmount,
+    from: window.ethereum.selectedAddress, //交易的签名者也就是用户
+    to: NFTcontractAddress, //收件人的地址也就是合约
+    data: contract.mint(window.ethereum.selectedAddress, tokenURI).encodeABI(),
   };
 
-  //   要求元掩码对交易进行签名
+  // //   要求元掩码对交易进行签名
   try {
     const txHash = await window.ethereum.request({
       method: "eth_sendTransaction",
@@ -98,6 +86,30 @@ export const mintNFT = async (mintAmount) => {
     };
   }
 };
+// 处理错误
+// 去掉首尾的空格 如果有一个为空
+//   if (url.trim() == "" || name.trim() == "" || description.trim() == "") {
+//     return {
+//       success: false,
+//       status: "在mint前请确认所有的区域都完成了",
+//     };
+//   }
+
+//   // 元数据
+//   const metadata = tokenABI;
+
+//   //将元数据上传到IPFS 获取tokenURI
+//   const pinataResponse = await pinJSONToIPFS(metadata); //将pinJSONToIPFS请求返回的对象存储在对象中
+//   // 如果请求失败
+//   if (!pinataResponse.success) {
+//     return {
+//       success: false,
+//       status: "oops!上传tokenUri的时候出了问题",
+//     };
+//   }
+//   // 请求成功pinataResponse中有元数据的固定位置
+//   const tokenUri = pinataResponse.pinataUrl;
+//   "https://api.avax-test.network/ext/bc/C/rpc"
 
 // 创建wallet
 // 从助记词创建wallet对象

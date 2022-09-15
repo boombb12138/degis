@@ -1,6 +1,6 @@
 import { ethers, BigNumber } from "ethers"; //
 import nftABI from "../../nftABI.json";
-import { contractAddress } from "./address";
+import { NFTcontractAddress } from "./address";
 const mint = async function (mintAmount) {
   if (window.ethereum) {
     const provider = new ethers.providers.JsonRpcProvider(
@@ -12,8 +12,7 @@ const mint = async function (mintAmount) {
     const signer = provider.getSigner();
 
     //   创建可写合约
-    const ERC20_ABI = nftABI;
-    const contract = new ethers.Contract(contractAddress, ERC20_ABI, signer);
+    const contract = new ethers.Contract(NFTcontractAddress, nftABI, signer);
     console.log(contract);
 
     try {
@@ -22,19 +21,6 @@ const mint = async function (mintAmount) {
     } catch (error) {
       console.log(error);
     }
-
-    // 造币
-    // const NFTcontract = await ethers.getContractFactory("NFTcontract");
-    // const contract = await NFTcontract.attach(
-    //   "0x3bDBB40160d450445EDAbceb7CE3b3dCF2C9Cd5B"
-    // );
-    // await contract.deploy(
-    //   "_mockToken",
-    //   " 0x3e6f79bd8dd4b637b070aac933f648371def1bef"
-    // ); //现在这个地址上面就有代币了
-
-    // await mintContract.deployed();
-    // console.log("mintContract deployed to:", mintContract.address);
   }
 };
 export default mint;

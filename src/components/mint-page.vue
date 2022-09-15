@@ -36,7 +36,7 @@ import connect from "../composables/index.js";
 import leftSide from "./mint/left-side.vue";
 import rightSide from "./mint/right-side.vue";
 import { accountAdress } from "../composables/connectMetamask.js";
-import { addWalletListener } from "../composables/connectMetamask.js";
+// import { addWalletListener } from "../composables/connectMetamask.js";
 
 import { ref } from "vue";
 export default {
@@ -54,7 +54,6 @@ export default {
       connectBtnText.value =
         accountAdress.slice(0, 4) + "..." + accountAdress.slice(-4);
     };
-    addWalletListener();
     return {
       leftSide,
       rightSide,
