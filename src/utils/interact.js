@@ -1,11 +1,8 @@
 require("dotenv").config();
 import { ethers } from "ethers";
 import nftABI from "../../nftABI.json";
-// import { tokenAddress } from "@/composables/address";
 import { NFTcontractAddress } from "@/composables/address";
-import { pinJSONToIPFS } from "./pinata.js";
-// import { pinJSONToIPFS } from "./pinata";
-import tokenABI from "../../tokenABI.json";
+// import tokenABI from "../../tokenABI.json";
 
 // const contractABI = tokenABI;
 var obj = { something: window };
@@ -39,9 +36,6 @@ window.postMessage(obj, "*");
 console.log("We do not have any errors.");
 
 export const mintNFT = async () => {
-  const pinataResponse = await pinJSONToIPFS(tokenABI);
-  const tokenURI = pinataResponse.pinataUrl;
-
   let network = {
     chainId: 43113,
     name: "Fuji(C-Chain)",
@@ -53,20 +47,12 @@ export const mintNFT = async () => {
   const contract = new ethers.Contract(NFTcontractAddress, nftABI, signer);
   console.log(contract);
 
-  // learnWeb3的部分===
-  // const value = 0.001 * mintAmount;
-  // const tx = await contract.mint(mintAmount, {
-  //   value: utils.parseEther(value.toString()),
-  // });
-  // await tx.wait();
-  // window.alert("mint成功了");
-  // learnWeb3的部分===
-
   //   交易
   const Transfer = {
     from: window.ethereum.selectedAddress, //交易的签名者也就是用户
     to: NFTcontractAddress, //收件人的地址也就是合约
-    data: contract.mint(window.ethereum.selectedAddress, tokenURI).encodeABI(),
+    data: contract.mint().encodeABI,
+    // data: contract.mint(window.ethereum.selectedAddress, mintAmount).encodeABI,
   };
 
   // //   要求元掩码对交易进行签名
